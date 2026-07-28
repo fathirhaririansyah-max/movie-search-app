@@ -3,15 +3,13 @@ const apiKey = "42937143";
 async function searchMovie() {
     const movie = document.getElementById("movieInput").value.trim();
 
-    if (movie === "") {
-        alert("Please enter a movie title.");
+    if (!movie) {
+        alert("Please enter a movie title!");
         return;
     }
 
-    const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(movie)}`;
-
     try {
-        const response = await fetch(url);
+        const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(movie)}`);
         const data = await response.json();
 
         console.log(data);
@@ -21,8 +19,9 @@ async function searchMovie() {
             return;
         }
 
-        document.getElementById("poster").src = data.Poster;
-        document.getElementById("poster").alt = data.Title;
+        document.getElementById("poster").src = data.Poster !== "N/A"
+            ? data.Poster
+            : "https://via.placeholder.com/300x450?text=No+Image";
 
         document.getElementById("title").textContent = data.Title;
         document.getElementById("year").textContent = "Year: " + data.Year;
@@ -32,6 +31,6 @@ async function searchMovie() {
 
     } catch (error) {
         console.error(error);
-        alert("Failed to connect to the movie database.");
+        alert("Failed to connect to OMDb API.");
     }
 }
