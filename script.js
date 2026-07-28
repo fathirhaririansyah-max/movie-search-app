@@ -1,30 +1,37 @@
 const apiKey = "42937143";
 
-async function searchMovie(){
+async function searchMovie() {
+    const movie = document.getElementById("movieInput").value.trim();
 
-const movie=document.getElementById("movieInput").value;
+    if (movie === "") {
+        alert("Please enter a movie title.");
+        return;
+    }
 
-if(movie===""){
-alert("Enter movie title");
-return;
-}
+    const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(movie)}`;
 
-const url=`https://www.omdbapi.com/?apikey=${apiKey}&t=${movie}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-const response=await fetch(url);
+        console.log(data);
 
-const data=await response.json();
+        if (data.Response === "False") {
+            alert(data.Error);
+            return;
+        }
 
-if(data.Response==="False"){
-alert("Movie not found");
-return;
-}
+        document.getElementById("poster").src = data.Poster;
+        document.getElementById("poster").alt = data.Title;
 
-document.getElementById("poster").src=data.Poster;
-document.getElementById("title").innerText=data.Title;
-document.getElementById("year").innerText="Year : "+data.Year;
-document.getElementById("genre").innerText="Genre : "+data.Genre;
-document.getElementById("rating").innerText="IMDb : "+data.imdbRating;
-document.getElementById("plot").innerText=data.Plot;
+        document.getElementById("title").textContent = data.Title;
+        document.getElementById("year").textContent = "Year: " + data.Year;
+        document.getElementById("genre").textContent = "Genre: " + data.Genre;
+        document.getElementById("rating").textContent = "IMDb Rating: " + data.imdbRating;
+        document.getElementById("plot").textContent = data.Plot;
 
+    } catch (error) {
+        console.error(error);
+        alert("Failed to connect to the movie database.");
+    }
 }
