@@ -1,4 +1,4 @@
-const apiKey = "YOUR_OMDB_API_KEY";
+const apiKey = "42937143";
 
 async function searchMovie(){
 
